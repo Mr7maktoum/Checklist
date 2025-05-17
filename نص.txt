@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تشك ليست المركبات</title>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/dist/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #2a5caa;
+            --secondary: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            transition: all 0.3s;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .language-switcher {
+            text-align: left;
+            padding: 10px;
+        }
+        
+        .qr-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        #qr-reader {
+            width: 100%;
+            margin: 0 auto;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .checklist {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+        
+        .save-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .save-btn:hover {
+            background-color: #1a4a8a;
+        }
+        
+        /* للوضع الإنجليزي */
+        [dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        [dir="ltr"] .checklist-item input[type="checkbox"] {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        
+        [dir="ltr"] .language-switcher {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="app-title">تشك ليست المركبات</h1>
+        </header>
+        
+        <div class="language-switcher">
+            <button onclick="switchLanguage('ar')">العربية</button>
+            <button onclick="switchLanguage('en')">English</button>
+        </div>
+        
+        <div class="qr-section">
+            <h2 id="scan-title">مسح باركود المركبة</h2>
+            <div id="qr-reader" style="width:300px; height:300px;"></div>
+            <p id="scan-result"></p>
+        </div>
+        
+        <div class="checklist">
+            <h2 id="checklist-title">قائمة الفحص اليومي</h2>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="item1">
+                <label for="item1" id="label-item1">فحص ضغط الإطارات</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="item2">
+                <label for="item2" id="label-item2">فحص مستوى الزيت</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="item3">
+                <label for="item3" id="label-item3">فحص المصابيح الأمامية</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="item4">
+                <label for="item4" id="label-item4">فحص الفرامل</label>
+            </div>
+            
+            <button class="save-btn" id="save-btn">حفظ النتائج</button>
+        </div>
+    </div>
+
+    <script>
+        // الترجمة ثنائية اللغة
+        const translations = {
+            ar: {
+                title: "تشك ليست المركبات",
+                scanTitle: "مسح باركود المركبة",
+                checklistTitle: "قائمة الفحص اليومي",
+                items: [
+                    "فحص ضغط الإطارات",
+                    "فحص مستوى الزيت",
+                    "فحص المصابيح الأمامية",
+                    "فحص الفرامل"
+                ],
+                saveBtn: "حفظ النتائج",
+                scanned: "تم مسح المركبة: "
+            },
+            en: {
+                title: "Vehicle Checklist",
+                scanTitle: "Scan Vehicle Barcode",
+                checklistTitle: "Daily Checklist",
+                items: [
+                    "Check tire pressure",
+                    "Check oil level",
+                    "Check headlights",
+                    "Check brakes"
+                ],
+                saveBtn: "Save Results",
+                scanned: "Scanned vehicle: "
+            }
+        };
+
+        // تبديل اللغة
+        function switchLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            document.getElementById('app-title').textContent = translations[lang].title;
+            document.getElementById('scan-title').textContent = translations[lang].scanTitle;
+            document.getElementById('checklist-title').textContent = translations[lang].checklistTitle;
+            document.getElementById('save-btn').textContent = translations[lang].saveBtn;
+            
+            for (let i = 0; i < translations[lang].items.length; i++) {
+                document.getElementById(`label-item${i+1}`).textContent = translations[lang].items[i];
+            }
+        }
+
+        // مسح الباركود
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = (decodedText) => {
+            document.getElementById('scan-result').textContent = 
+                translations[document.documentElement.lang].scanned + decodedText;
+        };
+        
+        const config = { fps: 10, qrbox: 250 };
+        
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            qrCodeSuccessCallback
+        );
+
+        // حفظ البيانات (مثال)
+        document.getElementById('save-btn').addEventListener('click', () => {
+            alert(translations[document.documentElement.lang].saveBtn + " - سيتم حفظ البيانات في الخادم");
+            // هنا يمكنك إضافة كود AJAX لإرسال البيانات للخادم
+        });
+    </script>
+</body>
+</html>
