@@ -1,11 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>فحص المركبة</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f7f7f7; }
+    .container { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 0 10px #ccc; max-width: 600px; margin: auto; }
+    h1 { color: #333; }
+  </style>
 </head>
 <body>
-  <h1>أهلاً بك!</h1>
-  <p>صفحة فحص المركبة قيد التحضير.</p>
+  <div class="container">
+    <h1>فحص المركبة</h1>
+    <p id="vehicleInfo">جاري تحميل بيانات المركبة...</p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const vehicle = params.get('vehicle');
+
+    const data = {
+      "3704hk": "المركبة رقم 3704 - رمز hk",
+      "2432yb": "المركبة رقم 2432 - رمز yb",
+      "1949wk": "المركبة رقم 1949 - رمز wk",
+      "1305wa": "المركبة رقم 1305 - رمز wa",
+      "6608wa": "المركبة رقم 6608 - رمز wa",
+      "65wa":   "المركبة رقم 65 - رمز wa",
+      "9279wa": "المركبة رقم 9279 - رمز wa"
+    };
+
+    const info = data[vehicle];
+    document.getElementById("vehicleInfo").innerText = info
+      ? `تم اختيار: ${info}`
+      : "لم يتم تحديد مركبة، أو الرقم غير صحيح.";
+  </script>
 </body>
 </html>
